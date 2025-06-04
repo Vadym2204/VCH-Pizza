@@ -46,7 +46,7 @@ export default function MenuItemPriceProps({name,addLabel,props,setProps}) {
         {props?.length > 0 && props.map((size,index) => (
           <div key={index} className="flex items-end gap-2">
             <div>
-              <label>Ім'я</label>
+              <label>Ім\'я</label>
               <input type="text"
                      placeholder="Назва розміру"
                      value={size.name}
