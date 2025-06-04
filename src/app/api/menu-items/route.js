@@ -15,11 +15,11 @@ export async function POST(req) {
       const menuItemDoc = await MenuItem.create(data);
       return Response.json(menuItemDoc);
     } catch (error) {
-      console.error("Error creating menu item:", error); // Log the error for debugging
-      return new Response(JSON.stringify({ error: "Failed to create menu item" }), { status: 500 }); // Return a 500 error
+      console.error("Error creating menu item:", error); 
+      return new Response(JSON.stringify({ error: "Failed to create menu item" }), { status: 500 }); 
     }
   } else {
-    return new Response(JSON.stringify({}), { status: 403 }); // Return a 403 for unauthorized
+    return new Response(JSON.stringify({}), { status: 403 }); 
   }
 }
 
@@ -29,12 +29,12 @@ export async function PUT(req) {
     try {
       const {_id, category, ...data} = await req.json();
 
-      if (category && !mongoose.Types.ObjectId.isValid(category)) {  //Validate if category is being updated
+      if (category && !mongoose.Types.ObjectId.isValid(category)) {  
         return new Response(JSON.stringify({ error: "Invalid category ID" }), { status: 400 });
       }
 
       await MenuItem.findByIdAndUpdate(_id, data);
-      return Response.json({ success: true }); // Indicate success with a JSON response
+      return Response.json({ success: true }); 
     } catch (error) {
       console.error("Error updating menu item:", error);
       return new Response(JSON.stringify({ error: "Failed to update menu item" }), { status: 500 });
