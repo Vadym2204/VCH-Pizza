@@ -1,34 +1,34 @@
-'use client';
-import {CartContext, cartProductPrice} from "@/components/AppContext";
+"use client";
+import { CartContext, cartProductPrice } from "@/components/AppContext";
 import AddressInputs from "@/components/layout/AddressInputs";
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import CartProduct from "@/components/menu/CartProduct";
-import {useProfile} from "@/components/UseProfile";
-import {useContext, useEffect, useState} from "react";
+import { useProfile } from "@/components/UseProfile";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function CartPage() {
-  const {cartProducts,removeCartProduct} = useContext(CartContext);
+  const { cartProducts, removeCartProduct } = useContext(CartContext);
   const [address, setAddress] = useState({});
-  const {data:profileData} = useProfile();
+  const { data: profileData } = useProfile();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (window.location.href.includes('canceled=1')) {
-        toast.error('Платіж не вдалося 😔');
+    if (typeof window !== "undefined") {
+      if (window.location.href.includes("canceled=1")) {
+        toast.error("Платіж не вдалося 😔");
       }
     }
   }, []);
 
   useEffect(() => {
     if (profileData?.city) {
-      const {phone, streetAddress, city, postalCode, country} = profileData;
+      const { phone, streetAddress, city, postalCode, country } = profileData;
       const addressFromProfile = {
         phone,
         streetAddress,
         city,
         postalCode,
-        country
+        country,
       };
       setAddress(addressFromProfile);
     }
@@ -39,16 +39,16 @@ export default function CartPage() {
     subtotal += cartProductPrice(p);
   }
   function handleAddressChange(propName, value) {
-    setAddress(prevAddress => ({...prevAddress, [propName]:value}));
+    setAddress((prevAddress) => ({ ...prevAddress, [propName]: value }));
   }
   async function proceedToCheckout(ev) {
     ev.preventDefault();
     // address and shopping cart products
 
     const promise = new Promise((resolve, reject) => {
-      fetch('/api/checkout', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
+      fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address,
           cartProducts,
@@ -64,10 +64,10 @@ export default function CartPage() {
     });
 
     await toast.promise(promise, {
-      loading: 'Підготовка вашого замовлення...',
-      success: 'Перенаправлення на оплату...',
-      error: 'Щось пішло не так... Спробуйте пізніше',
-    })
+      loading: "Підготовка вашого замовлення...",
+      success: "Перенаправлення на оплату...",
+      error: "Щось пішло не так... Спробуйте пізніше",
+    });
   }
 
   if (cartProducts?.length === 0) {
@@ -84,22 +84,25 @@ export default function CartPage() {
       <div className="text-center">
         <SectionHeaders mainHeader="Кошик" />
       </div>
-      <div className="mt-8 grid gap-8 grid-cols-2">
-        <div>
+      <div className="mt-8 grid gap-8 grid-cols-1 sm:grid-cols-2">
+        <div className="order-1">
           {cartProducts?.length === 0 && (
             <div>Немає продуктів у вашому кошику</div>
           )}
-          {cartProducts?.length > 0 && cartProducts.map((product, index) => (
-            <CartProduct
-              key={product._id} 
-              product={product}
-              onRemove={() => removeCartProduct(index)} 
-            />
-          ))}
+          {cartProducts?.length > 0 &&
+            cartProducts.map((product, index) => (
+              <CartProduct
+                key={product._id}
+                product={product}
+                onRemove={() => removeCartProduct(index)}
+              />
+            ))}
           <div className="py-2 pr-16 flex justify-end items-center">
             <div className="text-gray-500">
-              Проміжний підсумок:<br />
-              Доставка:<br />
+              Проміжний підсумок:
+              <br />
+              Доставка:
+              <br />
               Загалом:
             </div>
             <div className="font-semibold pl-2 text-right">
@@ -109,14 +112,14 @@ export default function CartPage() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-100 p-4 rounded-lg">
+        <div className="bg-gray-100 p-4 rounded-lg order-2">
           <h2>Оплата</h2>
           <form onSubmit={proceedToCheckout}>
             <AddressInputs
               addressProps={address}
               setAddressProp={handleAddressChange}
             />
-            <button type="submit">Заплатити {subtotal+100} ₴</button>
+            <button type="submit">Заплатити {subtotal + 100} ₴</button>
           </form>
         </div>
       </div>
